@@ -5,10 +5,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    public Transform moveTarget;
     public Transform mainCamera;
-    public GameObject boardObject;
-    public float moveSpeed;
     public float fallingThreshold = -0.5f;
 
     private enum State
@@ -20,16 +17,30 @@ public class PlayerController : MonoBehaviour
 
     private State state;
     private Vector2 movementVector;
-    private GameBoard gameBoard;
     private Rigidbody rb;
+    private MoveController moveController;
 
     // Start is called before the first frame update
     void Start()
     {
-        moveTarget.parent = null;
         state = State.Idle;
-        gameBoard = boardObject.GetComponent<GameBoard>();
         rb = GetComponent<Rigidbody>();
+    }
+
+    void OnEnable()
+    {
+        moveController = GetComponent<MoveController>();
+        moveController.OnMoveEnd += HandleMoveEnd;
+    }
+
+    void OnDisable()
+    {
+        moveController.OnMoveEnd -= HandleMoveEnd;
+    }
+
+    void HandleMoveEnd()
+    {
+        state = State.Idle;
     }
 
     void OnMove(InputValue value)
@@ -37,13 +48,10 @@ public class PlayerController : MonoBehaviour
         movementVector = value.Get<Vector2>();
     }
 
-    void HandleMovement() 
+    void HandleMovement()
     {
         Vector3 direction = Vector3.zero;
-        float distance = gameBoard.tileSize;
         bool moved = false;
-
-        Vector3 target = moveTarget.position;
 
         if (Mathf.Abs(movementVector.x) > 0.5)
         {
@@ -60,22 +68,18 @@ public class PlayerController : MonoBehaviour
         float snappedCameraDirection = (float)(((int)90f * Mathf.Round(cameraDirection / 90f)) % 360);
         direction = Quaternion.Euler(0, snappedCameraDirection, 0) * direction;
 
-        RaycastHit hit;
-        if (moved && !rb.SweepTest(direction, out hit, distance))
+        if (moved && moveController.Move(direction, 1))
         {
             state = State.Moving;
-            target += direction * distance;
-            moveTarget.position = target;
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        switch(state)
+        switch (state)
         {
             case State.Idle:
-                moveTarget.position = transform.position;
                 HandleMovement();
                 if (rb.velocity.y < fallingThreshold)
                 {
@@ -84,12 +88,7 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case State.Moving:
-                transform.position = Vector3.MoveTowards(transform.position, moveTarget.position, moveSpeed * Time.deltaTime);
-
-                if (Vector3.Distance(transform.position, moveTarget.position) <= .05f) {
-                    transform.position = moveTarget.position;
-                    state = State.Idle;
-                }
+                // Handled by MoveController
                 break;
 
             case State.Falling:
