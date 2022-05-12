@@ -36,7 +36,7 @@ public class MoveController : MonoBehaviour
         RaycastHit hitInfo;
         if (!moving) 
         {
-            bool hit = rb.SweepTest(direction, out hitInfo, distance);
+            bool hit = rb.SweepTest(direction, out hitInfo, distance, QueryTriggerInteraction.Ignore);
             bool moved = false;
 
             if (hit) {
