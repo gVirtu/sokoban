@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     public Transform mainCamera;
+    public GameObject model;
     public float fallingThreshold = -0.5f;
 
     private enum State
@@ -17,6 +18,7 @@ public class PlayerController : MonoBehaviour
 
     private State state;
     private Vector2 movementVector;
+    private Vector3 lastMovementDirection = Vector3.forward;
     private Rigidbody rb;
     private MoveController moveController;
 
@@ -41,6 +43,7 @@ public class PlayerController : MonoBehaviour
     void HandleMoveEnd()
     {
         state = State.Idle;
+        model.GetComponent<Animator>().SetBool("walking", false);
     }
 
     void OnMove(InputValue value)
@@ -60,7 +63,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (Mathf.Abs(movementVector.y) > 0.5)
         {
-            direction = Vector3.forward * Mathf.Sign(movementVector.y);
+            direction = Vector3.forward * Mathf.Sign(movementVector.y);   
             moved = true;
         }
 
@@ -68,9 +71,15 @@ public class PlayerController : MonoBehaviour
         float snappedCameraDirection = (float)(((int)90f * Mathf.Round(cameraDirection / 90f)) % 360);
         direction = Quaternion.Euler(0, snappedCameraDirection, 0) * direction;
 
-        if (moved && moveController.Move(direction, 1))
+        if (moved)
         {
-            state = State.Moving;
+            lastMovementDirection = direction;
+
+            if (moveController.Move(direction, 1))
+            {
+                state = State.Moving;
+                model.GetComponent<Animator>().SetBool("walking", true);
+            }
         }
     }
 
@@ -98,5 +107,9 @@ public class PlayerController : MonoBehaviour
                 }
                 break;
         }
+
+        // Update model rotation
+        Quaternion target = Quaternion.LookRotation(lastMovementDirection, Vector3.up);
+        model.transform.rotation = Quaternion.RotateTowards(model.transform.rotation, target, 800f * Time.deltaTime);
     }
 }
