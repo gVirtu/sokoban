@@ -8,6 +8,7 @@ public class PushBoxController : MonoBehaviour
     private Material originalMaterial;
     private bool isLit;
     private Renderer myRenderer;
+    private GameObject currentZone;
 
     // Start is called before the first frame update
     void Start()
@@ -17,16 +18,21 @@ public class PushBoxController : MonoBehaviour
         isLit = false;
     }
 
-    public void turnOn()
+    public void turnOn(GameObject zone)
     {
+        currentZone = zone;
         myRenderer.sharedMaterial = litMaterial;
         isLit = true;
     }
 
-    public void turnOff()
+    public void turnOff(GameObject zone)
     {
-        myRenderer.sharedMaterial = originalMaterial;
-        isLit = false;
+        if (currentZone == zone)
+        {
+            myRenderer.sharedMaterial = originalMaterial;
+            isLit = false;
+            currentZone = null;
+        }
     }
 
     // Update is called once per frame

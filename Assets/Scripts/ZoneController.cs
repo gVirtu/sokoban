@@ -22,7 +22,7 @@ public class ZoneController : MonoBehaviour
 
             if (otherScript != null)
             {
-                otherScript.turnOn();
+                otherScript.turnOn(gameObject);
             }
         }
     }
@@ -35,7 +35,7 @@ public class ZoneController : MonoBehaviour
 
             if (otherScript != null)
             {
-                otherScript.turnOff();
+                otherScript.turnOff(gameObject);
             }
 
             currentBox = null;
