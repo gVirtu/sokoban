@@ -34,14 +34,15 @@ public class MoveController : MonoBehaviour
 
 
         RaycastHit hitInfo;
-        if (!moving) 
+        if (!moving)
         {
+            direction += Vector3.up * 0.003f;
             bool hit = rb.SweepTest(direction, out hitInfo, distance, QueryTriggerInteraction.Ignore);
             bool moved = false;
 
             if (hit) {
                 GameObject hitObject = hitInfo.collider.gameObject;
-                
+
                 if (canPush && hitObject.CompareTag("Pushable"))
                 {
                     MoveController hitMoveController = hitObject.GetComponent<MoveController>();
