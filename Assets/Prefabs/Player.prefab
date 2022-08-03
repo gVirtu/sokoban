@@ -161,6 +161,7 @@ MonoBehaviour:
   moveSpeed: 5
   boardObject: {fileID: 0}
   canPush: 1
+  recordActions: 1
 --- !u!1001 &5247312106191470624
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ public class MoveController : MonoBehaviour
     public float moveSpeed;
     public GameObject boardObject;
     public bool canPush = false;
+    public bool recordActions = false;
 
     public delegate void MoveEndDelegate();
     public event MoveEndDelegate OnMoveEnd;
@@ -39,6 +40,8 @@ public class MoveController : MonoBehaviour
             direction += Vector3.up * 0.003f;
             bool hit = rb.SweepTest(direction, out hitInfo, distance, QueryTriggerInteraction.Ignore);
             bool moved = false;
+            bool pushed = false;
+            GameAction action = new GameAction();
 
             if (hit) {
                 GameObject hitObject = hitInfo.collider.gameObject;
@@ -49,7 +52,9 @@ public class MoveController : MonoBehaviour
 
                     if (hitMoveController != null && hitMoveController.Move(direction, spaces))
                     {
+                        action.AddMovement(hitMoveController.gameObject, hitMoveController.moveTarget);
                         moved = true;
+                        pushed = true;
                     }
                 }
             }
@@ -62,6 +67,12 @@ public class MoveController : MonoBehaviour
             {
                 moving = true;
                 moveTarget.position += direction * distance;
+
+                action.AddMovement(gameObject, moveTarget);
+                if (recordActions && pushed)
+                {
+                    ActionStack.Instance.Push(action);
+                }
             }
         }
 

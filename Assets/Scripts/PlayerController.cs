@@ -51,6 +51,12 @@ public class PlayerController : MonoBehaviour
         movementVector = value.Get<Vector2>();
     }
 
+    void OnUndo()
+    {
+        if (state == State.Idle)
+            ActionStack.Instance.Pop();
+    }
+
     void HandleMovement()
     {
         Vector3 direction = Vector3.zero;
