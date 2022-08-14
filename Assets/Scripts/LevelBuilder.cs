@@ -16,7 +16,7 @@ public class LevelBuilder : MonoBehaviour
 
     void Start()
     {
-        TextAsset levelAsset = (TextAsset)Resources.Load("Levels/" + levelPath, typeof(TextAsset));
+        TextAsset levelAsset = (TextAsset)Resources.Load("Levels/" + GameManager.Instance.GetSelectedLevel(), typeof(TextAsset));
 
         string content = levelAsset.text;
         string[] lines = content.Split(
