@@ -11,6 +11,8 @@ public class LevelButtonHandler : MonoBehaviour
 	{
 		GameManager.Instance.SetSelectedLevel(levelFile);
 
-		SceneManager.LoadScene("Level");
+		StartLevelButtonHandler.StartButton.interactable = true;
+
+		PreviewPanel.Instance.RefreshPreview();
 	}
 }

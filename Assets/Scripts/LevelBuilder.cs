@@ -14,6 +14,8 @@ public class LevelBuilder : MonoBehaviour
     public GameObject objZone;
     public GameObject objFloor;
 
+    private List<GameObject> levelObjects;
+
     void Start()
     {
         TextAsset levelAsset = (TextAsset)Resources.Load("Levels/" + GameManager.Instance.GetSelectedLevel(), typeof(TextAsset));
@@ -26,6 +28,8 @@ public class LevelBuilder : MonoBehaviour
 
         int rows = lines.Length;
         int cols = lines[rows - 1].Length;
+
+        levelObjects = new List<GameObject>();
 
         BuildLevel(lines, rows, cols);
     }
@@ -47,7 +51,7 @@ public class LevelBuilder : MonoBehaviour
     {
         if (tile != '.')
         {
-            Instantiate(objFloor, new Vector3(-column * tileSize, 0f, row * tileSize), Quaternion.identity);
+            levelObjects.Add(Instantiate(objFloor, new Vector3(-column * tileSize, 0f, row * tileSize), Quaternion.identity));
         }
     }
 
@@ -83,6 +87,7 @@ public class LevelBuilder : MonoBehaviour
         if (obj != null)
         {
             GameObject instance = Instantiate(obj, position, rotation);
+            levelObjects.Add(instance);
 
             if (callback != null)
             {
@@ -97,12 +102,17 @@ public class LevelBuilder : MonoBehaviour
         cinemachineCam.Follow = instance.transform;
 
         PlayerController playerController = instance.GetComponent<PlayerController>();
-        playerController.mainCamera = GameObject.FindWithTag("MainCamera").transform;
+        if (playerController != null)
+        {
+            playerController.mainCamera = GameObject.FindWithTag("MainCamera").transform;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnDestroy()
     {
-        
+        foreach (var instance in levelObjects)
+        {
+            Destroy(instance);
+        }
     }
 }
