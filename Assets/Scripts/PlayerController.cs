@@ -8,12 +8,15 @@ public class PlayerController : MonoBehaviour
     public Transform mainCamera;
     public GameObject model;
     public float fallingThreshold = -0.5f;
+    public float winAscendSpeed = 3f;
+    public float winRotateSpeed = 80f;
 
     private enum State
     {
         Idle,
         Moving,
-        Falling
+        Falling,
+        Winning
     }
 
     private State state;
@@ -21,12 +24,14 @@ public class PlayerController : MonoBehaviour
     private Vector3 lastMovementDirection = Vector3.forward;
     private Rigidbody rb;
     private MoveController moveController;
+    private Animator animator;
 
     // Start is called before the first frame update
     void Start()
     {
         state = State.Idle;
         rb = GetComponent<Rigidbody>();
+        animator = model.GetComponent<Animator>();
     }
 
     void OnEnable()
@@ -42,8 +47,26 @@ public class PlayerController : MonoBehaviour
 
     void HandleMoveEnd()
     {
-        state = State.Idle;
-        model.GetComponent<Animator>().SetBool("walking", false);
+        if (state == State.Moving)
+        {
+            state = State.Idle;
+        }
+        animator.SetBool("walking", false);
+    }
+
+    public void HandleLevelVictory()
+    {
+        state = State.Winning;
+        rb.useGravity = false;
+        animator.SetBool("walking", false);
+        animator.SetBool("won", true);
+        Invoke("HandleShowWinHUD", 3f);
+    }
+
+    private void HandleShowWinHUD()
+    {
+        GameObject winHud = GameObject.FindWithTag("WinHUD");
+        winHud.transform.GetChild(0).gameObject.SetActive(true);
     }
 
     void OnMove(InputValue value)
@@ -84,9 +107,14 @@ public class PlayerController : MonoBehaviour
             if (moveController.Move(direction, 1))
             {
                 state = State.Moving;
-                model.GetComponent<Animator>().SetBool("walking", true);
+                animator.SetBool("walking", true);
             }
         }
+    }
+    void HandleFacingDirection()
+    {
+        Quaternion target = Quaternion.LookRotation(lastMovementDirection, Vector3.up);
+        model.transform.rotation = Quaternion.RotateTowards(model.transform.rotation, target, 800f * Time.deltaTime);
     }
 
     // Update is called once per frame
@@ -96,6 +124,7 @@ public class PlayerController : MonoBehaviour
         {
             case State.Idle:
                 HandleMovement();
+                HandleFacingDirection();
                 if (rb.velocity.y < fallingThreshold)
                 {
                     state = State.Falling;
@@ -104,6 +133,7 @@ public class PlayerController : MonoBehaviour
 
             case State.Moving:
                 // Handled by MoveController
+                HandleFacingDirection();
                 break;
 
             case State.Falling:
@@ -112,10 +142,15 @@ public class PlayerController : MonoBehaviour
                     state = State.Idle;
                 }
                 break;
+
+            case State.Winning:
+                if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f)
+                {
+                    transform.Translate(Vector3.up * winAscendSpeed * Time.deltaTime);
+                    model.transform.Rotate(Vector3.up, winRotateSpeed * Time.deltaTime);
+                }
+                break;
         }
 
-        // Update model rotation
-        Quaternion target = Quaternion.LookRotation(lastMovementDirection, Vector3.up);
-        model.transform.rotation = Quaternion.RotateTowards(model.transform.rotation, target, 800f * Time.deltaTime);
     }
 }

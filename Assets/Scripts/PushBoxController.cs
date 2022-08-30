@@ -18,14 +18,14 @@ public class PushBoxController : MonoBehaviour
         isLit = false;
     }
 
-    public void turnOn(GameObject zone)
+    public void TurnOn(GameObject zone)
     {
         currentZone = zone;
         myRenderer.sharedMaterial = litMaterial;
         isLit = true;
     }
 
-    public void turnOff(GameObject zone)
+    public void TurnOff(GameObject zone)
     {
         if (currentZone == zone)
         {
@@ -33,6 +33,11 @@ public class PushBoxController : MonoBehaviour
             isLit = false;
             currentZone = null;
         }
+    }
+
+    public bool IsLit()
+    {
+        return isLit;
     }
 
     // Update is called once per frame

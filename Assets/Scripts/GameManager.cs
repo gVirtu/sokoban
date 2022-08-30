@@ -28,4 +28,30 @@ public class GameManager : MonoBehaviour
     {
         return selectedLevel;
     }
+
+    public void CheckVictory()
+    {
+        foreach(var pushable in GameObject.FindGameObjectsWithTag("Pushable"))
+        {
+            var controller = pushable.GetComponent<PushBoxController>();
+
+            if (controller != null)
+            {
+                if (!controller.IsLit()) return;
+            }
+        }
+
+        WinLevel();
+    }
+
+    public void WinLevel()
+    {
+        var player = GameObject.FindGameObjectWithTag("Player");
+
+        if (player != null)
+        {
+            var controller = player.GetComponent<PlayerController>();
+            controller.HandleLevelVictory();
+        }
+    }
 }

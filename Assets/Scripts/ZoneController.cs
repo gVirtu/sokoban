@@ -22,7 +22,8 @@ public class ZoneController : MonoBehaviour
 
             if (otherScript != null)
             {
-                otherScript.turnOn(gameObject);
+                otherScript.TurnOn(gameObject);
+                GameManager.Instance.CheckVictory();
             }
         }
     }
@@ -35,7 +36,7 @@ public class ZoneController : MonoBehaviour
 
             if (otherScript != null)
             {
-                otherScript.turnOff(gameObject);
+                otherScript.TurnOff(gameObject);
             }
 
             currentBox = null;
