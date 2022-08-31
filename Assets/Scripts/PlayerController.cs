@@ -57,10 +57,11 @@ public class PlayerController : MonoBehaviour
     public void HandleLevelVictory()
     {
         state = State.Winning;
+        Instantiate(GameManager.Instance.Prefabs.lightBeam, moveController.moveTarget.transform.position, Quaternion.identity);
         rb.useGravity = false;
         animator.SetBool("walking", false);
         animator.SetBool("won", true);
-        Invoke("HandleShowWinHUD", 3f);
+        Invoke("HandleShowWinHUD", 1.5f);
     }
 
     private void HandleShowWinHUD()

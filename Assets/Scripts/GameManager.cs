@@ -6,6 +6,16 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    public AudioClip WinBGM;
+
+    [System.Serializable]
+    public class PrefabLibrary
+    {
+        public GameObject lightBeam;
+    }
+
+    public PrefabLibrary Prefabs;
+
     string selectedLevel;
     private void Awake()
     {
@@ -52,6 +62,17 @@ public class GameManager : MonoBehaviour
         {
             var controller = player.GetComponent<PlayerController>();
             controller.HandleLevelVictory();
+        }
+
+        var bgm = GameObject.FindGameObjectWithTag("BGM");
+        
+        if (bgm != null)
+        {
+            var audioSource = bgm.GetComponent<AudioSource>();
+            audioSource.Stop();
+            audioSource.clip = WinBGM;
+            audioSource.loop = false;
+            audioSource.Play();
         }
     }
 }

@@ -167,6 +167,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9670381122cda0f4186d465d72ef03ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  WinBGM: {fileID: 8300000, guid: 09b89b8bc5dffa14aa3bc6edd0d06e67, type: 3}
+  Prefabs:
+    lightBeam: {fileID: 241895995644758513, guid: ef5f05961bc05da4e9d7931518585f02,
+      type: 3}
 --- !u!1 &207554944
 GameObject:
   m_ObjectHideFlags: 3
