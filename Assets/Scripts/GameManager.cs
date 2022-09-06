@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
+        SaveDataManager.LoadGame();
         DontDestroyOnLoad(gameObject);
     }
 
