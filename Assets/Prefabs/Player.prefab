@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 5247312107327491652}
   - component: {fileID: 5247312107327491651}
   - component: {fileID: 5247312107327491653}
+  - component: {fileID: 1417558475152094770}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -160,10 +161,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveTarget: {fileID: 5247312106452472332}
-  moveSpeed: 5
+  moveSpeed: 6
   boardObject: {fileID: 0}
   canPush: 1
   recordActions: 1
+--- !u!114 &1417558475152094770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5247312107327491709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38a24de0daa49504c90b4859766395fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2687588592138633753
 PrefabInstance:
   m_ObjectHideFlags: 0
