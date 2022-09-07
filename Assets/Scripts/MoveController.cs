@@ -80,22 +80,22 @@ public class MoveController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (moving)
         {
-            transform.position = Vector3.MoveTowards(transform.position, moveTarget.position, moveSpeed * Time.deltaTime);
+            rb.position = Vector3.MoveTowards(rb.position, moveTarget.position, moveSpeed * Time.deltaTime);
 
-            if (Vector3.Distance(transform.position, moveTarget.position) <= .05f)
+            if (Vector3.Distance(rb.position, moveTarget.position) <= .05f)
             {
-                transform.position = moveTarget.position;
+                rb.position = moveTarget.position;
                 moving = false;
                 if (OnMoveEnd != null)
                     OnMoveEnd();
             }
         } else
         {
-            moveTarget.position = transform.position;
+            moveTarget.position = rb.position;
         }
     }
 }
