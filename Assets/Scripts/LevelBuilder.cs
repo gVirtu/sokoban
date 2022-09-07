@@ -49,9 +49,19 @@ public class LevelBuilder : MonoBehaviour
 
     void CreateFloor(char tile, int row, int column)
     {
-        if (tile != '.')
+        switch (tile)
         {
-            levelObjects.Add(Instantiate(objFloor, new Vector3(-column * tileSize, 0f, row * tileSize), Quaternion.identity));
+            case '@':
+            case '$':
+            case ' ':
+                levelObjects.Add(Instantiate(objFloor, new Vector3(-column * tileSize, 0f, row * tileSize), Quaternion.identity));
+                break;
+
+            case '.':
+            case '*':
+            case '+':
+                levelObjects.Add(Instantiate(objZone, new Vector3(-column * tileSize, 0f, row * tileSize), Quaternion.identity));
+                break;
         }
     }
 
@@ -68,19 +78,16 @@ public class LevelBuilder : MonoBehaviour
                 obj = objWall;
                 break;
 
-            case 'P':
+            case '@':
+            case '+':
                 obj = objPlayer;
                 callback = onCreatePlayer;
                 position += Vector3.up * 0.5f;
                 break;
 
-            case 'B':
+            case '$':
+            case '*':
                 obj = objBox;
-                break;
-
-            case 'x':
-                obj = objZone;
-                position += Vector3.down;
                 break;
         }
 
