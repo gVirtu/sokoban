@@ -36,8 +36,8 @@ public class MoveController : MonoBehaviour
         RaycastHit hitInfo;
         if (!moving)
         {
-            direction += Vector3.up * 0.003f;
-            bool hit = rb.SweepTest(direction, out hitInfo, distance, QueryTriggerInteraction.Ignore);
+            Vector3 testDirection = direction + Vector3.up * 0.003f;
+            bool hit = rb.SweepTest(testDirection, out hitInfo, distance, QueryTriggerInteraction.Ignore);
             bool moved = false;
             bool pushed = false;
             GameAction action = new GameAction();
@@ -91,6 +91,7 @@ public class MoveController : MonoBehaviour
             if (Vector3.Distance(rb.position, moveTarget.position) <= .05f)
             {
                 rb.position = moveTarget.position;
+                rb.velocity = Vector3.zero;
                 moving = false;
                 if (OnMoveEnd != null)
                     OnMoveEnd();
