@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     public float winAscendSpeed = 3f;
     public float winRotateSpeed = 80f;
 
-    private enum State
+    public enum State
     {
         Idle,
         Moving,
@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 lastMovementDirection = Vector3.forward;
     private Rigidbody rb;
     private MoveController moveController;
+    private AutoSolveController autoSolveController;
     private Animator animator;
 
     // Start is called before the first frame update
@@ -32,6 +33,7 @@ public class PlayerController : MonoBehaviour
         state = State.Idle;
         rb = GetComponent<Rigidbody>();
         animator = model.GetComponent<Animator>();
+        autoSolveController = GetComponent<AutoSolveController>();
     }
 
     void OnEnable()
@@ -47,11 +49,15 @@ public class PlayerController : MonoBehaviour
 
     void HandleMoveEnd()
     {
+        animator.SetBool("walking", false);
         if (state == State.Moving)
         {
             state = State.Idle;
+            if (autoSolveController.IsActive())
+            {
+                autoSolveController.NextStep();
+            }
         }
-        animator.SetBool("walking", false);
     }
 
     public void HandleLevelVictory()
@@ -72,6 +78,8 @@ public class PlayerController : MonoBehaviour
 
     void OnMove(InputValue value)
     {
+        if (autoSolveController.IsActive()) return;
+
         movementVector = value.Get<Vector2>();
     }
 
@@ -79,6 +87,20 @@ public class PlayerController : MonoBehaviour
     {
         if (state == State.Idle)
             ActionStack.Instance.Pop();
+    }
+
+    void OnAutosolve()
+    {
+        if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+        {
+            if (autoSolveController.StartAutoSolve())
+            {
+                if (state == State.Idle)
+                {
+                    autoSolveController.NextStep();
+                }
+            }
+        }
     }
 
     void HandleMovement()
@@ -103,15 +125,31 @@ public class PlayerController : MonoBehaviour
 
         if (moved)
         {
-            lastMovementDirection = direction;
+            Move(direction);
+        }
+    }
 
-            if (moveController.Move(direction, 1))
+    public void Move(Vector3 direction)
+    {
+        lastMovementDirection = direction;
+
+        if (moveController.Move(direction, 1))
+        {
+            state = State.Moving;
+            animator.SetBool("walking", true);
+        } else {
+            if (autoSolveController.IsActive())
             {
-                state = State.Moving;
-                animator.SetBool("walking", true);
+                autoSolveController.NextStep();
             }
         }
     }
+
+    public State GetState()
+    {
+        return state;
+    }
+
     void HandleFacingDirection()
     {
         Quaternion target = Quaternion.LookRotation(lastMovementDirection, Vector3.up);

@@ -33,7 +33,6 @@ public class MoveController : MonoBehaviour
     {
         float distance = gameBoard.tileSize * spaces;
 
-
         RaycastHit hitInfo;
         if (!moving)
         {
@@ -65,13 +64,16 @@ public class MoveController : MonoBehaviour
 
             if (moved)
             {
-                moving = true;
                 moveTarget.position += direction * distance;
+                moving = true;
 
                 action.AddMovement(gameObject, moveTarget);
-                if (recordActions && pushed)
+                
+                if (recordActions)
                 {
-                    ActionStack.Instance.Push(action);
+                    ReplayManager.Instance.RecordMovement(direction, pushed);
+                    action.SetReplayPosition(ReplayManager.Instance.MovementCount() - 1);
+                    if (pushed) ActionStack.Instance.Push(action);
                 }
             }
         }

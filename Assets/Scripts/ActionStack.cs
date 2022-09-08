@@ -26,15 +26,26 @@ public class Movement
 public class GameAction
 {
     private List<Movement> movements = new List<Movement>();
+    private int replayPosition = 0;
 
     public GameAction()
     {
+    }
+
+    public List<Movement> GetMovements()
+    {
+        return movements;
     }
 
     public void AddMovement(GameObject obj, Transform target)
     {
         Movement movement = new Movement(obj, obj.transform, target);
         movements.Add(movement);
+    }
+
+    public void SetReplayPosition(int position)
+    {
+        replayPosition = position;
     }
 
     public void Rollback()
@@ -47,6 +58,8 @@ public class GameAction
 
             gameObject.transform.SetPositionAndRotation(targetPosition, targetRotation);
         }
+
+        ReplayManager.Instance.TrimToIndex(replayPosition);
     }
 }
 
