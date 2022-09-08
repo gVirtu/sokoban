@@ -9,12 +9,14 @@ public class MoveController : MonoBehaviour
     public GameObject boardObject;
     public bool canPush = false;
     public bool recordActions = false;
+    public AudioClip pushSoundEffect;
 
     public delegate void MoveEndDelegate();
     public event MoveEndDelegate OnMoveEnd;
 
     private bool moving;
     private Rigidbody rb;
+    private AudioSource audioSource;
     private GameBoard gameBoard;
 
     void Start()
@@ -22,6 +24,7 @@ public class MoveController : MonoBehaviour
         moveTarget.parent = null;
         moving = false;
         rb = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
 
         if (boardObject == null)
             boardObject = GameObject.FindWithTag("GameBoard");
@@ -54,6 +57,9 @@ public class MoveController : MonoBehaviour
                         action.AddMovement(hitMoveController.gameObject, hitMoveController.moveTarget);
                         moved = true;
                         pushed = true;
+
+                        audioSource.pitch = Random.Range(0.92f, 1.08f);
+                        audioSource.PlayOneShot(pushSoundEffect);
                     }
                 }
             }

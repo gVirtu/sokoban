@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public float fallingThreshold = -0.5f;
     public float winAscendSpeed = 3f;
     public float winRotateSpeed = 80f;
+    public AudioClip undoSoundEffect;
 
     public enum State
     {
@@ -26,6 +27,7 @@ public class PlayerController : MonoBehaviour
     private MoveController moveController;
     private AutoSolveController autoSolveController;
     private Animator animator;
+    private AudioSource audioSource;
 
     // Start is called before the first frame update
     void Start()
@@ -34,6 +36,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         animator = model.GetComponent<Animator>();
         autoSolveController = GetComponent<AutoSolveController>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     void OnEnable()
@@ -86,7 +89,13 @@ public class PlayerController : MonoBehaviour
     void OnUndo()
     {
         if (state == State.Idle)
-            ActionStack.Instance.Pop();
+        {
+            if (ActionStack.Instance.Pop())
+            {
+                audioSource.pitch = Random.Range(0.92f, 1.08f);
+                audioSource.PlayOneShot(undoSoundEffect);
+            }
+        }
     }
 
     void OnAutosolve()

@@ -89,7 +89,7 @@ public class ActionStack : MonoBehaviour
         RefreshActionsText();
     }
 
-    public void Pop()
+    public bool Pop()
     {
         if (actions.Count > 0)
         {
@@ -97,7 +97,9 @@ public class ActionStack : MonoBehaviour
             GameAction action = actions.Pop();
             action.Rollback();
             RefreshActionsText();
+            return true;
         }
+        return false;
     }
 
     private void RefreshActionsText()
