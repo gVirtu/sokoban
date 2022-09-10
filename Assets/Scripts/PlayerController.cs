@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
+using Cinemachine;
 
 public class PlayerController : MonoBehaviour
 {
     public Transform mainCamera;
+    public CinemachineVirtualCameraBase cinemachineCam;
     public GameObject model;
     public float fallingThreshold = -0.5f;
     public float winAscendSpeed = 3f;
@@ -70,6 +73,8 @@ public class PlayerController : MonoBehaviour
         rb.useGravity = false;
         animator.SetBool("walking", false);
         animator.SetBool("won", true);
+        cinemachineCam.LookAt = transform;
+        cinemachineCam.Follow = transform;
         Invoke("HandleShowWinHUD", 1.5f);
     }
 
@@ -110,6 +115,18 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+    }
+
+
+    void OnRestart()
+    {
+        SceneManager.LoadScene("Level");
+    }
+
+
+    void OnQuit()
+    {
+        SceneManager.LoadScene("LevelSelect");
     }
 
     void HandleMovement()

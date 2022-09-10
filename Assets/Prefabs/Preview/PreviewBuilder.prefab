@@ -46,7 +46,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelPath: 
   tileSize: 2
+  zoomDistanceFactor: 0.1
   cinemachineCam: {fileID: 0}
+  baseCameraFollow: {x: 0, y: 20, z: 15}
   objWall: {fileID: 3493672803988369846, guid: bf673a025d989ff46abc71d5c3cc2700, type: 3}
   objPlayer: {fileID: 5247312107327491709, guid: 36f11d78ab946db40ad48948ef0650d5,
     type: 3}

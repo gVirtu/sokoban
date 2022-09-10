@@ -2,18 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using Cinemachine;
 
 public class LevelBuilder : MonoBehaviour
 {
     public string levelPath;
     public float tileSize = 2f;
-    public Cinemachine.CinemachineVirtualCameraBase cinemachineCam;
+    public float zoomDistanceFactor = 0.02f;
+    public CinemachineVirtualCameraBase cinemachineCam;
+    public Vector3 baseCameraFollow = new Vector3(0, 20, 15);
     public GameObject objWall;
     public GameObject objPlayer;
     public GameObject objBox;
     public GameObject objZone;
     public GameObject objFloor;
 
+    private Vector3 originalFollow;
     private List<GameObject> levelObjects;
 
     void Start()
@@ -32,7 +36,10 @@ public class LevelBuilder : MonoBehaviour
         levelObjects = new List<GameObject>();
 
         BuildLevel(lines, rows, cols);
+        ZoomCamera(Math.Max(rows, cols));
+        FollowLevelCenter(rows, cols);
     }
+
 
     void BuildLevel(string[] tiles, int rows, int cols)
     {
@@ -45,6 +52,21 @@ public class LevelBuilder : MonoBehaviour
                 CreateTile(tiles[i][j], i, j);
             }
         }
+    }
+
+    void ZoomCamera(int dimension)
+    {
+        var transposer = (cinemachineCam as CinemachineVirtualCamera).GetCinemachineComponent<CinemachineTransposer>();
+        originalFollow = transposer.m_FollowOffset;
+        transposer.m_FollowOffset = baseCameraFollow * dimension * zoomDistanceFactor;
+    }
+
+    void FollowLevelCenter(int rows, int columns)
+    {
+        var instance = Instantiate(new GameObject(), new Vector3(-(columns - 1) * 0.5f * tileSize, 0f, (rows - 1) * 0.5f * tileSize), Quaternion.identity);
+
+        cinemachineCam.LookAt = instance.transform;
+        cinemachineCam.Follow = instance.transform;
     }
 
     void CreateFloor(char tile, int row, int column)
@@ -105,12 +127,13 @@ public class LevelBuilder : MonoBehaviour
 
     void onCreatePlayer(GameObject instance)
     {
-        cinemachineCam.LookAt = instance.transform;
-        cinemachineCam.Follow = instance.transform;
+        //cinemachineCam.LookAt = instance.transform;
+        //cinemachineCam.Follow = instance.transform;
 
         PlayerController playerController = instance.GetComponent<PlayerController>();
         if (playerController != null)
         {
+            playerController.cinemachineCam = cinemachineCam;
             playerController.mainCamera = GameObject.FindWithTag("MainCamera").transform;
         }
     }
