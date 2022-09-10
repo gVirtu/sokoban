@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -16,8 +18,11 @@ public class GameManager : MonoBehaviour
 
     public PrefabLibrary Prefabs;
 
+    public string[] variantTitles;
+
     string selectedLevel;
     int selectedLevelIndex;
+    bool wonOnce = false;
     private void Awake()
     {
         if (Instance != null)
@@ -29,6 +34,11 @@ public class GameManager : MonoBehaviour
         Instance = this;
         SaveDataManager.LoadGame();
         DontDestroyOnLoad(gameObject);
+    }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     public void SetSelectedLevel(string level, int index)
@@ -81,6 +91,18 @@ public class GameManager : MonoBehaviour
             audioSource.clip = WinBGM;
             audioSource.loop = false;
             audioSource.Play();
+        }
+
+        wonOnce = true;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        GameObject titleObject = GameObject.FindGameObjectWithTag("Title");
+
+        if (wonOnce && titleObject != null)
+        {
+            titleObject.GetComponent<TextMeshProUGUI>().text = variantTitles[Random.Range(0, variantTitles.Length)];
         }
     }
 }
