@@ -9,6 +9,10 @@ public class CopyReplayButtonHandler : MonoBehaviour
     private void Start()
     {
         textMesh = GetComponentInChildren<TextMeshProUGUI>();
+
+        #if UNITY_WEBGL
+        gameObject.SetActive(false);
+        #endif
     }
     public void onCopyButtonClick()
 	{
