@@ -5,11 +5,15 @@ using UnityEngine;
 public class ZoneController : MonoBehaviour
 {
     GameObject currentBox;
+    public AudioClip turnOnClip;
+    public AudioClip turnOffClip;
+
+    private AudioSource source;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        
+        source = GetComponent<AudioSource>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -23,6 +27,7 @@ public class ZoneController : MonoBehaviour
             if (otherScript != null)
             {
                 otherScript.TurnOn(gameObject);
+                source.PlayOneShot(turnOnClip);
                 GameManager.Instance.CheckVictory();
             }
         }
@@ -37,6 +42,7 @@ public class ZoneController : MonoBehaviour
             if (otherScript != null)
             {
                 otherScript.TurnOff(gameObject);
+                source.PlayOneShot(turnOffClip);
             }
 
             currentBox = null;
