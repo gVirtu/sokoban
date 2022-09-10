@@ -9,14 +9,21 @@ public class LevelButtonBuilder : MonoBehaviour
     {
         TextAsset levelNamesAsset = Resources.Load<TextAsset>("levelNames");
         LevelNameList levelNames = JsonUtility.FromJson<LevelNameList>(levelNamesAsset.text);
+        int progress = SaveDataManager.CountCompletedLevels();
 
-        foreach (string level in levelNames.names)
+        for(var i = 0; i < levelNames.names.Length; i++)
         {
-            var button = Instantiate(levelButton, transform);
-            LevelButtonHandler handler = button.GetComponent<LevelButtonHandler>();
-            handler.levelFile = level;
+            if (i > 0 && progress == 0) return;
+            if (progress < i - 3) return;
 
-            if (!SaveDataManager.IsLevelComplete(level))
+            var levelName = levelNames.names[i];
+            var button = Instantiate(levelButton, transform);
+
+            LevelButtonHandler handler = button.GetComponent<LevelButtonHandler>();
+            handler.levelFile = levelName;
+            handler.index = i;
+
+            if (!SaveDataManager.IsLevelComplete(levelName))
             {
                 button.transform.Find("CompletionMarker").gameObject.SetActive(false);
             }

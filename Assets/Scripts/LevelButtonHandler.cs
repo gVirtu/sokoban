@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class LevelButtonHandler : MonoBehaviour
 {
 	public string levelFile;
-
+	public int index;
     private void Start()
     {
 		string levelCaption = (transform.GetSiblingIndex() + 1).ToString();
@@ -18,7 +18,7 @@ public class LevelButtonHandler : MonoBehaviour
 
     public void onLevelButtonClick()
 	{
-		GameManager.Instance.SetSelectedLevel(levelFile);
+		GameManager.Instance.SetSelectedLevel(levelFile, index);
 
 		StartLevelButtonHandler.StartButton.interactable = true;
 

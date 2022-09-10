@@ -44,4 +44,10 @@ public static class SaveDataManager
     {
         return saveData.levelCompletions.ContainsKey(level);  
     }
+
+
+    public static int CountCompletedLevels()
+    {
+        return saveData.levelCompletions.Keys.Count;
+    }
 }

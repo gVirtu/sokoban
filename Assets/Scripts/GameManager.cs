@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     public PrefabLibrary Prefabs;
 
     string selectedLevel;
+    int selectedLevelIndex;
     private void Awake()
     {
         if (Instance != null)
@@ -30,14 +31,20 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void SetSelectedLevel(string level)
+    public void SetSelectedLevel(string level, int index)
     {
         selectedLevel = level;
+        selectedLevelIndex = index;
     }
 
     public string GetSelectedLevel()
     {
         return selectedLevel;
+    }
+
+    public int GetSelectedLevelIndex()
+    {
+        return selectedLevelIndex;
     }
 
     public void CheckVictory()
